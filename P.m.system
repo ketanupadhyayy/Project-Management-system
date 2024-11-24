@@ -1,0 +1,35 @@
+const express = require("express");
+const mysql = require("mysql2");
+const cors = require("cors");
+const { json } = require("body-parser");
+
+const app = express();
+app.use(json())
+app.use(cors({origin:"http://localhost:5173"}));
+
+const db = mysql.createConnection({
+    host:'localhost',
+    user:"root",
+    password:"umjka7",
+    database:"user"
+})
+
+db.connect((err) => {
+    if (err) {
+        console.error("Error connecting to the database:", err.message);
+        return;
+    }
+    console.log("Connected to the database!");
+});
+
+app.get("/users",(req,res)=>{
+    const sql = 'select * from users'
+    db.query(sql,(err,data)=>{
+        if(err) return res.json(err);
+        return res.json(data);
+    })
+})
+
+app.listen(8000,()=>{
+    console.log("listining....")
+})
